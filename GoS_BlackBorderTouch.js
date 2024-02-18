@@ -16,7 +16,7 @@
 * 
 * ------------------------------------------------------------
 * 
-* Version: 1.1
+* Version: 1.2
 * 
 * - You can do everything you want with this plugin
 * - You can use it commercially
@@ -58,6 +58,13 @@
 * @value Deny
 * @default Allow
 * 
+* @param allowLeftClickMoveWhenOutside
+* @text Allow Left-Click movement when outside / on border
+* @desc Player tries to move to clicked position, if set to true.
+* Should be deactivated, but it may help solving a bug.
+* @type boolean
+* @default false
+* 
 * @param IDforLeftClickOutsideCanvas
 * @text Left-Click Switch/CE (Id)
 * @desc Activate switch or common-event with given Id
@@ -77,12 +84,16 @@
 	let RightClick = PluginManager.parameters(pluginName).allowRightClickOutsideCanvas;
 	let IDforLeftClick = PluginManager.parameters(pluginName).IDforLeftClickOutsideCanvas;
 	let IDforRightClick = PluginManager.parameters(pluginName).IDforRightClickOutsideCanvas;
+	let MoveWhenOutside = PluginManager.parameters(pluginName).allowLeftClickMoveWhenOutside;
 	TouchInput._onLeftButtonDown = function(event) {
 		const x = Graphics.pageToCanvasX(event.pageX);
 		const y = Graphics.pageToCanvasY(event.pageY);
 		if (Graphics.isInsideCanvas(x, y) || LeftClick == "Allow") {
 			this._mousePressed = true;
 			this._pressedTime = 0;
+			if (MoveWhenOutside == "true") {
+				this._onTrigger(x, y)
+			};
 			Graphics.isInsideCanvas(x, y) ? this._onTrigger(x, y) : "";
 		} else if (LeftClick == "AllowButChange") {
 			this._onCancel(x, y);
